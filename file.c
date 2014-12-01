@@ -25,6 +25,12 @@ void Write(int fd, void *buf, int count)
 		error(fd) ;
 }
 
+void Read(int fd, void *buf, int count)
+{
+	if (read(fd, buf, count) < count)
+		error(fd) ;
+}
+
 void Ioctl(int fd, int request, void *argp)
 {
 	if (ioctl(fd, request, argp) < 0)

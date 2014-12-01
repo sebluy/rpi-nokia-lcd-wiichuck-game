@@ -1,8 +1,18 @@
 #ifndef WII_CHUCK_H
 #define WII_CHUCK_H
 
-void wii_chuck_init(void) ;
+typedef struct {
+	int z_button ;
+	int c_button ;
+	int x_joystick ;
+	int y_joystick ;
+	int x_accel ;
+	int y_accel ;
+	int z_accel ;
+} wii_chuck_state ;
 
-unsigned char *wii_chuck_get_data(void) ;
+void wii_chuck_setup(void) ;
+
+wii_chuck_state *wii_chuck_get_state(void) ;
 
 #endif
