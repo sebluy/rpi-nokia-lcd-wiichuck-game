@@ -6,35 +6,31 @@
 
 int main(int argc, char *argv[])
 {
+	unsigned char STICK_MAN[][5] =
+		{{0, 1, 1, 1, 0},
+		 {0, 1, 0, 1, 0},
+		 {0, 1, 1, 1, 0},
+		 {0, 0, 1, 0, 0},
+		 {1, 1, 1, 1, 1},
+		 {0, 0, 1, 0, 0},
+		 {0, 0, 1, 0, 0},
+		 {0, 1, 1, 1, 0},
+		 {0, 1, 0, 1, 0},
+		 {0, 1, 0, 1, 0},
+		 {1, 1, 0, 1, 1}} ;
 
-	wii_chuck_state *wii_chuck ;
+	int x, y ;
 
 	lcd_display_setup() ;
-	lcd_display_map() ;
+	lcd_display_reset() ;
+	lcd_display_update() ;
 
-	wii_chuck_setup() ;
+	for (x = 0 ; x < 5 ; x++)
+		for (y = 0 ; y < 11 ; y++)
+			if (STICK_MAN[y][x]) 
+				lcd_display_set(x, y) ;
 
-	while (1) {
-		wii_chuck = wii_chuck_get_state() ;
-
-		while (!wii_chuck->c_button ) {
-			usleep(16667) ;
-			wii_chuck = wii_chuck_get_state() ;
-		}
-
-		printf("Z button: %x\n", wii_chuck->z_button) ;
-		printf("C button: %x\n", wii_chuck->c_button) ;
-		printf("X joystick: %x\n", wii_chuck->x_joystick) ;
-		printf("Y joystick: %x\n", wii_chuck->y_joystick) ;
-		printf("X acceleration : %x\n", wii_chuck->x_accel) ;
-		printf("Y acceleration : %x\n", wii_chuck->y_accel) ;
-		printf("Z acceleration : %x\n", wii_chuck->z_accel) ;
-
-		while (wii_chuck->c_button ) {
-			usleep(16667) ;
-			wii_chuck = wii_chuck_get_state() ;
-		}
-	}
+	lcd_display_update() ;
 
 	return 0 ;
 }
