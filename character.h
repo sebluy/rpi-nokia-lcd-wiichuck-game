@@ -8,6 +8,9 @@ typedef struct {
 	double pos_x ;
 	double pos_y ;
 	double vel_x ;
+	double vel_y ;
+	double jump_time ;
+	int jumping ;
 	unsigned char grid[CHARACTER_HEIGHT][CHARACTER_WIDTH] ;
 } character ;
 

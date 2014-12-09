@@ -7,9 +7,10 @@
 
 int main(int argc, char *argv[])
 {
+	wii_chuck_setup() ;
 	lcd_display_setup() ;
-/*	lcd_display_clear() ;
-	lcd_display_update() ; */
+	lcd_display_clear() ;
+	lcd_display_update() ; 
 
 	while (1) {
 		world_update() ;
