@@ -7,8 +7,8 @@
 
 #define HEIGHT CHARACTER_HEIGHT
 #define WIDTH CHARACTER_WIDTH
-#define JUMP_VEL 5
-#define JUMP_TIME 1
+#define JUMP_VEL 2
+#define GRAVITY 0.01
 
 #define GRID \
 	{{0, 1, 1, 1, 0}, \
@@ -75,7 +75,7 @@ static void character_adjust_pos(void)
 
 	if (c.jumping) {
 		if (c.pos_y >= 0) {
-			c.vel_y -= c.jump_time * c.jump_time ;
+			c.vel_y -= GRAVITY*(c.jump_time * c.jump_time) ;
 			c.jump_time++ ;
 		} else {
 			c.pos_y = 0 ;
