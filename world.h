@@ -8,10 +8,16 @@
 #define WORLD_HEIGHT LCD_DISPLAY_HEIGHT
 
 /* add character */
-void world_add_character(character c) ;
+void world_add_character(character *c) ;
 
 /* remove character */
-void world_remove_character(character c) ;
+void world_remove_character(character *c) ;
+
+/* updates clearances for character given by surroundings in world */
+void world_character_clearances(character *c) ;
+
+/* setup world and its dependencies */
+void world_setup(void) ;
 
 /* update the character in the world and then send to the display */
 void world_update(void) ;
