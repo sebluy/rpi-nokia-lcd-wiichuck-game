@@ -15,7 +15,7 @@
 
 static unsigned char GRID[HEIGHT][WIDTH] ;
 static void change_character(character *c, int add) ;
-static void add_platform(int x, int y, int length) ;
+/*static void add_platform(int x, int y, int length) ;*/
 static int grid_y(int y) ;
 /*static int value_at(int x, int y) ;*/
 static void set_value_at(int x, int y, int value) ;
@@ -32,16 +32,16 @@ void world_remove_character(character *c)
 
 void world_character_clearances(character *c)
 {
-	if (c->pos_y <= 0)
+	if (c->pos_y < 1)
 		c->clear_bottom = 0 ;
 	else
 		c->clear_bottom = 1 ;
 	
-	if (c->pos_x <= 0)
+	if (c->pos_x < 1)
 		c->clear_left = 0 ;
 	else
 		c->clear_left = 1 ;
-int
+
 	if (c->pos_x >= WIDTH - CHARACTER_WIDTH - 1)
 		c->clear_right = 0 ;
 	else
@@ -50,15 +50,6 @@ int
 
 void world_setup(void)
 {
-	add_platform(5, 5, 5) ;
-	add_platform(10, 10, 5) ;
-	add_platform(15, 15, 5) ;
-	add_platform(20, 20, 5) ;
-	add_platform(25, 25, 5) ;
-	add_platform(30, 30, 5) ;
-	add_platform(35, 35, 5) ;
-	add_platform(40, 40, 5) ;
-
 	wii_chuck_setup() ;
 	lcd_display_setup() ;
 	lcd_display_clear() ;
@@ -85,12 +76,13 @@ static void change_character(character *c, int add)
 	}
 }
 
-static void add_platform(int x, int y, int length)
+/*static void add_platform(int x, int y, int length)
 {
 	int i ;
 	for (i = x ; i < x + length ; i++)
 		set_value_at(i, y, 1) ;	
 }
+*/
 
 /*static int value_at(int x, int y)
 {
