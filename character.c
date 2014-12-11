@@ -52,11 +52,23 @@ static void update_pos(void) ;
 static void update_pos_x(void) ;
 static void update_pos_y(void) ;
 
+static int grid_y(int y) ;
+
 void character_update(void)
 {
 	world_remove_character(&c) ;
 	update_state() ;
 	world_add_character(&c) ;
+}
+
+int character_value_at(int x, int y)
+{
+	return c.grid[grid_y(y)][x] ;
+}
+
+static int grid_y(int y)
+{
+	return HEIGHT - y - 1 ;
 }
 
 static void update_state(void)
@@ -110,9 +122,9 @@ static void update_vel_x(void)
 
 static void update_vel_y(void)
 {
-	if (c.clear_bottom)
+	if (c.clear_bottom) {
 		c.vel_y -= GRAVITY ;
-	else if (c.jump)
+	} else if (c.jump)
 		c.vel_y = JUMP_VEL ;
 	else
 		c.vel_y = 0 ;

@@ -19,6 +19,6 @@ typedef struct {
 
 void character_update(void) ;
 
-void character_set_pos(double x, double y) ;
+int character_value_at(int x, int y) ;
 
 #endif

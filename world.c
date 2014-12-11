@@ -14,7 +14,12 @@
 #define DELAY 16667 /* 60 Hz */
 
 static unsigned char GRID[HEIGHT][WIDTH] ;
+
 static void change_character(character *c, int add) ;
+static void add_platform(int x, int y, int length) ;
+static int grid_y(int y) ;
+static int value_at(int x, int y) ;
+static void set_value_at(int x, int y, int value) ;
 
 void world_add_character(character *c)
 {		
@@ -26,26 +31,72 @@ void world_remove_character(character *c)
 	change_character(c, REMOVE) ;
 }
 
-void world_character_clearances(character *c)
+static world_bind_character_vel(character *c)
 {
-	if (c->pos_y <= 0)
-		c->clear_bottom = 0 ;
-	else
-		c->clear_bottom = 1 ;
-	
-	if (c->pos_x <= 0)
-		c->clear_left = 0 ;
-	else
-		c->clear_left = 1 ;
+	int i, j ;
+	double bounded_vel_x ;
+	double bounded_vel_y ;
+	int x, x_start, x_finish ;
+	int y, y_start, y_finish ;
 
-	if (c->pos_x >= WIDTH - CHARACTER_WIDTH - 1)
-		c->clear_right = 0 ;
-	else
-		c->clear_right = 1 ;
+	if (c->vel_x > 0 && c->vel_y > 0) {
+}
+
+/* checks an l-shape pattern for obstructions 
+   obstructed_move(1, 2, 3, 4) checks
+   0000000
+   00xxxx0
+   00000x0
+   00000x0
+   1100000
+   1100000
+   1100000 */
+
+static int obstructed_move_diag(int corner_x, int corner_y, int vel_x, int vel_y)
+{
+	int i, obstructed ;
+
+	obstructed = 0 ;
+	
+	for (i = x + 1 ; i < x + vel_x ; i++)
+		obstructed |= value_at(i, y + row) ;
+
+	for (i = y + 1 ; i < y + vel_y ; i++)
+		obstructed |= value_at(x + col, i) ;
+	
+	obstructed |= value_at(x + col, y + row) ;
+
+	return obstructed ;
+}
+
+void world_bind_character_vel(character *c)
+{
+	int right_bound, top_bound ;
+
+	right_bound = c->pos_x + CHARACTER_WIDTH ;
+	top_bound = c->pos_x + CHARACTER_WIDTH ;
+
+	while (obstructed(top_bound, right_bound,
+		c->vel_x, c->vel_y)) {
+		c.vel_x-- ;
+		c.vel_y-- ;
+	}
+
+	if (c.vel_x > 0)
+		
 }
 
 void world_setup(void)
 {
+	add_platform(5, 5, 5) ;
+	add_platform(10, 10, 5) ;
+	add_platform(15, 15, 5) ;
+	add_platform(20, 20, 5) ;
+	add_platform(25, 25, 5) ;
+	add_platform(30, 30, 5) ;
+	add_platform(35, 35, 5) ;
+	add_platform(40, 40, 5) ;
+
 	wii_chuck_setup() ;
 	lcd_display_setup() ;
 	lcd_display_clear() ;
@@ -62,16 +113,33 @@ void world_update(void)
 
 static void change_character(character *c, int add)
 {
-	int x, y, i, j ;
-	x = c->pos_x ;
-	y = HEIGHT - c->pos_y ;
+	int i, j, value ;
 	for (j = 0 ; j < CHARACTER_HEIGHT ; j++) {
 		for (i = 0 ; i < CHARACTER_WIDTH ; i++) {
-			if (add)
-				GRID[y + j - CHARACTER_HEIGHT][x + i] = 
-					c->grid[j][i] ;
-			else
-				GRID[y + j - CHARACTER_HEIGHT][x + i] = 0 ;
+			value = add ? character_value_at(i, j) : 0 ;
+			set_value_at(c->pos_x + i, c->pos_y + j, value) ;
 		}
 	}
+}
+
+static void add_platform(int x, int y, int length)
+{
+	int i ;
+	for (i = x ; i < x + length ; i++)
+		set_value_at(i, y, 1) ;	
+}
+
+static int value_at(int x, int y)
+{
+	return GRID[grid_y(y)][x] ;
+}
+
+static void set_value_at(int x, int y, int value)
+{
+	GRID[grid_y(y)][x] = value ;
+}
+
+static int grid_y(int y)
+{
+	return HEIGHT - y - 1 ;
 }

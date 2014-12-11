@@ -3,13 +3,14 @@ CFLAGS = -g -Wall
 SRCS = gpio.c file.c spi.c i2c.c wii_chuck.c lcd_display.c world.c character.c \
 	main.c
 OBJS := $(SRCS:.c=.o)
+DEPS := $(SRCS:.c=.d)
 MAIN = main
 
 all: $(MAIN)
 
 ###
 
-$(MAIN): $(OBJS)
+$(MAIN): $(OBJS) $(DEPS)
 	$(CC) $(CFLAGS) -o $(MAIN) $(OBJS) 
 
 .c.o:
