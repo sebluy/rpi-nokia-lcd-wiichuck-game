@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <unistd.h>
-
 #include "character.h"
 #include "wii_chuck.h"
 #include "world.h"
@@ -26,6 +23,8 @@
 static character c = { 
 	.pos_x = 0,
 	.pos_y = 0,
+	.i_pos_x = 0,
+	.i_pos_y = 0,
 	.vel_x = 0,
 	.vel_y = 0,
 	.jump = 0,
@@ -46,6 +45,8 @@ static void update_pos_x(void) ;
 static void update_pos_y(void) ;
 
 static int grid_y(int y) ;
+
+static int round_to_int(double d) ;
 
 void character_update(void)
 {
@@ -92,6 +93,8 @@ static void update_pos(void)
 {
 	update_pos_x() ;
 	update_pos_y() ;
+	c.i_pos_x = round_to_int(c.pos_x) ;
+	c.i_pos_y = round_to_int(c.pos_y) ;
 }
 
 static void update_vel_x(void)
@@ -134,3 +137,7 @@ static void update_pos_y(void)
 	c.pos_y += c.vel_y ;
 }
 
+static int round_to_int(double d)
+{
+	return d > 0.0 ? d + 0.5 : d - 0.5 ;
+}

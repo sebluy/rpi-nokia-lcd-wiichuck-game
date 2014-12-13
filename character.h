@@ -7,6 +7,8 @@
 typedef struct {
 	double pos_x ;
 	double pos_y ;
+	int i_pos_x ;
+	int i_pos_y ;
 	double vel_x ;
 	double vel_y ;
 	int jump ;
