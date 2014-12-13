@@ -13,8 +13,8 @@ void world_add_character(character *c) ;
 /* remove character */
 void world_remove_character(character *c) ;
 
-/* updates clearances for character given by surroundings in world */
-void world_character_clearances(character *c) ;
+/* limits velocities due to collisions with objects */
+void world_character_limit_vel(character *c) ;
 
 /* setup world and its dependencies */
 void world_setup(void) ;

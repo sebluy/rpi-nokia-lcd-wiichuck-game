@@ -3,22 +3,17 @@ CFLAGS = -g -Wall
 SRCS = gpio.c file.c spi.c i2c.c wii_chuck.c lcd_display.c world.c character.c \
 	main.c
 OBJS := $(SRCS:.c=.o)
-DEPS := $(SRCS:.c=.d)
 MAIN = main
 
 all: $(MAIN)
 
 ###
 
-$(MAIN): $(OBJS) $(DEPS)
+$(MAIN): $(OBJS)
 	$(CC) $(CFLAGS) -o $(MAIN) $(OBJS) 
 
 .c.o:
 	$(CC) $(CFLAGS) -c $< -o $@
-	$(CC) $(CFLAGS) -MM $< > $*.d
 
 clean:	
-	rm -f *~ *.o *.d $(MAIN)
-
-depend: $(SRCS)
-	makedepend $^
+	rm -f *~ *.o $(MAIN)

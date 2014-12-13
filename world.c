@@ -31,59 +31,14 @@ void world_remove_character(character *c)
 	change_character(c, REMOVE) ;
 }
 
-static world_bind_character_vel(character *c)
+void world_character_limit_vel(character *c)
 {
-	int i, j ;
-	double bounded_vel_x ;
-	double bounded_vel_y ;
-	int x, x_start, x_finish ;
-	int y, y_start, y_finish ;
-
-	if (c->vel_x > 0 && c->vel_y > 0) {
-}
-
-/* checks an l-shape pattern for obstructions 
-   obstructed_move(1, 2, 3, 4) checks
-   0000000
-   00xxxx0
-   00000x0
-   00000x0
-   1100000
-   1100000
-   1100000 */
-
-static int obstructed_move_diag(int corner_x, int corner_y, int vel_x, int vel_y)
-{
-	int i, obstructed ;
-
-	obstructed = 0 ;
-	
-	for (i = x + 1 ; i < x + vel_x ; i++)
-		obstructed |= value_at(i, y + row) ;
-
-	for (i = y + 1 ; i < y + vel_y ; i++)
-		obstructed |= value_at(x + col, i) ;
-	
-	obstructed |= value_at(x + col, y + row) ;
-
-	return obstructed ;
-}
-
-void world_bind_character_vel(character *c)
-{
-	int right_bound, top_bound ;
-
-	right_bound = c->pos_x + CHARACTER_WIDTH ;
-	top_bound = c->pos_x + CHARACTER_WIDTH ;
-
-	while (obstructed(top_bound, right_bound,
-		c->vel_x, c->vel_y)) {
-		c.vel_x-- ;
-		c.vel_y-- ;
-	}
-
-	if (c.vel_x > 0)
-		
+	if ((c->pos_y + c->vel_y) <= 0)
+		c->vel_y = -(c->pos_y) ;
+	if ((c->pos_x + CHARACTER_WIDTH + c->vel_x) >= WIDTH - 1)
+		c->vel_x = (WIDTH - 1 - c->pos_x - CHARACTER_WIDTH) ;
+	if ((c->pos_x + c->vel_x) <= 0)
+		c->vel_x = -(c->pos_x) ;
 }
 
 void world_setup(void)
