@@ -16,6 +16,9 @@ void world_remove_character(character *c) ;
 /* limits velocities due to collisions with objects */
 void world_character_limit_vel(character *c) ;
 
+/* returns 1 if character if there is something directly under character */
+int world_character_grounded(character *c) ;
+
 /* setup world and its dependencies */
 void world_setup(void) ;
 

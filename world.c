@@ -28,6 +28,10 @@ static double search_platform_right(double x, double y,
 		int height, double max_distance) ;
 static double search_platform_left(double x, double y,
 		int height, double max_distance) ;
+static double search_platform_down(double x, double y,
+		int width, double max_distance) ;
+static double search_platform_up(double x, double y,
+		int width, double max_distance) ;
 
 static int search_col(int x, int y, int length) ;
 static int search_row(int x, int y, int width) ;
@@ -40,6 +44,12 @@ void world_add_character(character *c)
 void world_remove_character(character *c)
 {
 	change_character(c, REMOVE) ;
+}
+
+int world_character_grounded(character *c)
+{
+	return search_row(c->pos_x, c->pos_y - 1, CHARACTER_WIDTH) ;
+	
 }
 
 void world_character_limit_vel(character *c)
@@ -58,19 +68,61 @@ void world_character_limit_vel(character *c)
 	else if ((c->pos_x + CHARACTER_WIDTH + c->vel_x) > WIDTH - 1)
 		c->vel_x = (WIDTH - 1 - c->pos_x - CHARACTER_WIDTH) ;
 
-	
 	double distance ;
+
+	/* diagonal collisions */
+	/* up right */
+	/*
+	if (c->vel_y > 0 && c->vel_x > 0) {
+		distance = search_platform_right(c->pos_x + CHARACTER_WIDTH,
+				c->pos_y + CHARACTER_HEIGHT, c->vel_y + 1, c->vel_x + 1) ;
+		if (distance >= 0) {
+			c->vel_x = 0 ;
+			c->vel_y = 0 ;
+		}
+	}
+	*/
+
+	/* down right */
+	/*
+	if (c->vel_y < 0 && c->vel_x > 0) {
+		distance = search_platform_right(c->pos_x + CHARACTER_WIDTH,
+				c->pos_y - c->vel_y + 1, c->vel_y + 1, c->vel_x + 1) ;
+		if (distance >= 0) {
+			c->vel_x = 0 ;
+			c->vel_y = 0 ;
+		}
+	}
+	*/
+
+	/* x collisions */
 	if (c->vel_x > 0) {
 		distance = search_platform_right(c->pos_x + CHARACTER_WIDTH,
 				c->pos_y, CHARACTER_HEIGHT, c->vel_x) ;
-		if (distance > -1)
+		if (distance >= 0)
 			c->vel_x = distance ;
 	} else if (c->vel_x < 0 ) {
 		distance = search_platform_left(c->pos_x, c->pos_y,
 				CHARACTER_HEIGHT, c->vel_x) ;
-		if (distance < 1)
+		if (distance <= 0)
 			c->vel_x = distance ;
 	}
+	
+	/* y collisions */
+	if (c->vel_y < 0) {
+		distance = search_platform_down(c->pos_x, c->pos_y,
+				CHARACTER_WIDTH, c->vel_y) ;
+		if (distance <= 0)
+			c->vel_y = distance ;
+
+	} else if (c->vel_y > 0) {
+		distance = search_platform_up(c->pos_x,
+			c->pos_y + CHARACTER_HEIGHT,
+			CHARACTER_WIDTH, c->vel_y) ;
+		if (distance >= 0)
+			c->vel_y = distance ;
+	}
+
 }
 
 static double search_platform_right(double x, double y,
@@ -105,6 +157,38 @@ static double search_platform_left(double x, double y,
 	return 1 ;
 }
 
+static double search_platform_down(double x, double y,
+		int width, double max_distance)
+{
+	int row ;
+	int rows_searched ;
+	row = y - 1 ;
+	rows_searched = 0 ;
+	while (rows_searched > max_distance - 1) {
+		if (search_row(x, row, width))
+			return row - y + 1 ;
+		rows_searched-- ;
+		row-- ;
+	}
+	return 1 ;
+}
+
+static double search_platform_up(double x, double y,
+		int width, double max_distance)
+{
+	int row ;
+	int rows_searched ;
+	row = y ;
+	rows_searched = 0 ;
+	while (rows_searched < max_distance + 1) {
+		if (search_row(x, row, width))
+			return row - y ;
+		rows_searched++ ;
+		row++ ;
+	}
+	return -1 ;
+}
+
 static int search_col(int x, int y, int height)
 {
 	int i ;
@@ -125,14 +209,11 @@ static int search_row(int x, int y, int width)
 
 void world_setup(void)
 {
-	add_platform(5, 5, 5) ;
 	add_platform(10, 10, 5) ;
-	add_platform(15, 15, 5) ;
 	add_platform(20, 20, 5) ;
-	add_platform(25, 25, 5) ;
 	add_platform(30, 30, 5) ;
-	add_platform(35, 35, 5) ;
-	add_platform(40, 40, 5) ;
+	add_platform(40, 20, 5) ;
+	add_platform(50, 20, 5) ;
 
 	wii_chuck_setup() ;
 	lcd_display_setup() ;
@@ -168,6 +249,10 @@ static void add_platform(int x, int y, int length)
 
 static int value_at(int x, int y)
 {
+	if (x < 0 || x > WIDTH - 1)
+		return 1 ;
+	if (y < 0 || y > HEIGHT - 1)
+		return 1 ;
 	return GRID[grid_y(y)][x] ;
 }
 

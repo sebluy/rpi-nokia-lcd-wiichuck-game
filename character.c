@@ -5,7 +5,8 @@
 #define HEIGHT CHARACTER_HEIGHT
 #define WIDTH CHARACTER_WIDTH
 #define JUMP_VEL 2
-#define GRAVITY 0.2
+#define RUN_VEL 0.5
+#define GRAVITY 0.1
 
 #define GRID \
 	{{0, 1, 1, 1, 0}, \
@@ -76,7 +77,7 @@ static void update_state(void)
 
 static void update_jump(void)
 {
-	if (c.vel_y == 0 && state->c_button)
+	if (world_character_grounded(&c) && state->c_button)
 		c.jump = 1 ;
 	else
 		c.jump = 0 ;
@@ -104,9 +105,9 @@ static void update_vel_x(void)
 	x = state->x_joystick - CENTER_JOYSTICK_X ;
 
 	if (x > 0)
-		c.vel_x = (RIGHTMOST_JOYSTICK_X - x)/RIGHT_JOYSTICK_X_RANGE ;
+		c.vel_x = RUN_VEL * x / RIGHT_JOYSTICK_X_RANGE ;
 	else if (x < 0)
-		c.vel_x = -(LEFTMOST_JOYSTICK_X - x)/LEFT_JOYSTICK_X_RANGE ;
+		c.vel_x = RUN_VEL * x / LEFT_JOYSTICK_X_RANGE ;
 	else
 		c.vel_x = 0 ;
 }
@@ -121,14 +122,7 @@ static void update_vel_y(void)
 
 static void update_pos_x(void)
 {
-	int move_left_ok ;
-	int move_right_ok ;
-	
-	move_left_ok = c.vel_x < -0.5 ;
-	move_right_ok = c.vel_x > 0.5 ;
-
-	if (move_right_ok || move_left_ok)
-		c.pos_x += c.vel_x ;
+	c.pos_x += c.vel_x ;
 
 }
 
